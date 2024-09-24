@@ -15,7 +15,7 @@ with contextlib.suppress(FileNotFoundError), open("PyMakeFile.yaml", "r") as fp:
     data = yaml.safe_load(fp)
 
 
-@click.command(help="Dump the defaults to the terminal.")
+@click.command(help="Dump the defaults of PyMakeFile.yaml to the terminal.")
 def dump_defaults() -> None:
     if data == {}:
         click.secho(

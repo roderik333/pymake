@@ -3,6 +3,9 @@
 import click
 
 from .cmds import bash, build, cmd, dump_defaults, play_kube, scaffold
+from .interpolate_templates import interpolate_templates, yamlparser
+from .publish_encode import publish_encode
+from .write_templates import podman_scaffold
 
 
 @click.group(help="General commands")
@@ -17,7 +20,11 @@ def podman() -> None:
 
 cli.add_command(scaffold)
 cli.add_command(dump_defaults)
-cli.add_command(cmd)
-cli.add_command(bash)
+podman.add_command(cmd)
+podman.add_command(bash)
 podman.add_command(build)
 podman.add_command(play_kube, "play")
+podman.add_command(podman_scaffold, "scaffold")
+podman.add_command(yamlparser)
+podman.add_command(publish_encode)
+podman.add_command(interpolate_templates)
