@@ -11,7 +11,7 @@ requires-python = ">=3.8"
 license = "MIT"
 keywords = []
 authors = [
-  { name = "Rune Hansén Steinnes", email = "rune.steinnes@westum.no" },
+  { name = "Rune Hansén Steinnes-Westum", email = "rune.steinnes@westum.no" },
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -24,7 +24,18 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
+dependencies = [
+    "click",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pynvim",
+    "neovim",
+    "mypy",
+    "build",
+]
 
 [project.urls]
 Documentation = "https://github.com/roderik333/pymake#readme"
@@ -62,3 +73,69 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
 ]
+
+[tool.ruff]
+extend-select = ["A", "B", "C4", "D", "I", "ERA", "PLR", "SIM", "TCH"]
+ignore = [
+    "D101",
+    "D102",
+    "D103",
+    "D107",
+    "D202",
+    "D400",
+    "D401",
+    "D406",
+    "D407",
+    "D412",
+    "D417",
+]
+show-fixes = true
+line-length = 119
+
+[tool.mypy]
+python_version = "3.12"
+disallow_untyped_defs = true
+show_error_codes = true
+show_column_numbers = true
+warn_return_any = true
+warn_unused_ignores = true
+warn_unreachable = true
+warn_redundant_casts = true
+ignore_missing_imports = true
+pretty = true
+exclude = ["scripts", "docs", "test"]
+
+[tool.basedpyright]
+venvPath = "."
+include = ["src"]
+exclude = [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/@python2",
+    "stubs/enum34",
+    "stubs/futures",
+    "stubs/ipaddress",
+]
+ignore = []
+defineConstant = { DEBUG = true }
+pythonVersion = "3.12"
+pythonPlatform = "Linux"
+typeCheckingMode = "standard"
+# Add stuff that is different from standard.. easier than to subtract from all.
+reportAny = false
+reportMissingImports = true
+strictListInference = true
+strictDictionaryInference = true
+deprecateTypingAliases = true               # < 3.9
+reportCallIssue = false
+reportUnusedClass = "warning"
+reportUnusedFunction = "warning"
+reportUnusedVariable = "error"
+reportUntypedBaseClass = "error"
+reportUntypedNamedTuple = "error"
+reportPrivateUsage = "error"
+reportConstantRedefinition = "error"
+reportIncompatibleMethodOverride = "error"
+reportIncompatibleVariableOverride = "none"
+reportMissingSuperCall = "error"
+reportUnusedImport = "error"
