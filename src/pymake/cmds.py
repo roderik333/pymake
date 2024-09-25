@@ -161,10 +161,10 @@ Use the -r/--run option to specify it. For example: pymake cmd -r 'makemigration
 
 
 @click.command(help="Enter bash shell in the context of the container.")
-@click.option(
-    "-c", "--container", default=data.get("container", None), type=str, help="The name of the container to enter."
-)
-def bash(container: str) -> None:
+@click.option("-c", "--container", default=data.get("container"), type=str, help="The name of the container to enter.")
+def bash(container: str | None) -> None:
+    if container is None:
+        click.secho("You must provide a container.", fg="red", err=True)
     _ = subprocess.run(
         [
             "podman",

@@ -35,6 +35,7 @@ dev = [
     "neovim",
     "mypy",
     "build",
+    "pytest",
 ]
 
 [project.urls]
