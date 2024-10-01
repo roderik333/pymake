@@ -122,7 +122,11 @@ Missing one or more configmaps:""",
         _ = subprocess.run(cmd)
 
 
-@click.command(help="Run manage.py in the context of the container.")
+@click.command(
+    name="manage",
+    help="Run manage.py in the context of the container.",
+    context_settings={"ignore_unknown_options": True, "allow_extra_args": True},
+)
 @click.option(
     "-c",
     "--container",
@@ -137,10 +141,9 @@ Missing one or more configmaps:""",
     type=click.Path(),
     help="The relative path to the manage script in the context of the container.",
 )
-@click.option("-r", "--run", type=str, help="The django-admin command to run in the context of the container.")
-def manage(container: str, manage_script: str, run: str) -> None:
+@click.argument("command", nargs=-1)
+def manage(container: str, manage_script: str, command: tuple[str]) -> None:
     try:
-        _cmd = run.split(" ")
         _ = subprocess.run(
             [
                 "podman",
@@ -149,13 +152,13 @@ def manage(container: str, manage_script: str, run: str) -> None:
                 f"{container}",
                 "python",
                 f"{manage_script}",
-                *_cmd,
+                *command,
             ],
         )
     except AttributeError:
         click.secho(
             """Please provide a command to execute in the container.
-Use the -r/--run option to specify it. For example: pymake cmd -r 'makemigrations your-app-name'""",
+            For example: pymake podman manage makemigrations --dry-run""",
             fg="red",
         )
 
