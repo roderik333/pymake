@@ -138,7 +138,7 @@ Missing one or more configmaps:""",
     help="The relative path to the manage script in the context of the container.",
 )
 @click.option("-r", "--run", type=str, help="The django-admin command to run in the context of the container.")
-def cmd(container: str, manage_script: str, run: str) -> None:
+def manage(container: str, manage_script: str, run: str) -> None:
     try:
         _cmd = run.split(" ")
         _ = subprocess.run(

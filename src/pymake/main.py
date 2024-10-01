@@ -2,7 +2,7 @@
 
 import click
 
-from .cmds import bash, build, cmd, dump_defaults, play_kube, scaffold
+from .cmds import bash, build, dump_defaults, manage, play_kube, scaffold
 from .interpolate_templates import interpolate_templates, yamlparser
 from .publish_encode import publish_encode
 from .write_templates import podman_scaffold
@@ -20,7 +20,7 @@ def podman() -> None:
 
 cli.add_command(scaffold)
 cli.add_command(dump_defaults)
-podman.add_command(cmd)
+podman.add_command(manage)
 podman.add_command(bash)
 podman.add_command(build)
 podman.add_command(play_kube, "play")
