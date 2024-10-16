@@ -38,6 +38,16 @@ def scaffold() -> None:
                 "container": "your-pod-your-app",
                 "configmaps": ["configmaps/django-env-map-template.yaml", "configmaps/postgres-env-map-template.yaml"],
                 "kube": "play-kube.yaml",
+                "paths": {
+                    "config": "./config",
+                    "templates": "./config/templates",
+                    "gunicorn-out": "./config/gunicorn",
+                    "nginx-out": "./config/nginx",
+                    "conf.d-out": "./config/nginx/conf.d",
+                    "secrets": "./config/templates/secrets",
+                    "configmaps": "./config/templates/configmaps",
+                    "configmaps-out": "./configmaps",
+                },
             },
             fp,
         )

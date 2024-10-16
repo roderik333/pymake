@@ -3,7 +3,7 @@
 import click
 
 from .cmds import bash, build, dump_defaults, manage, play_kube, scaffold
-from .interpolate_templates import interpolate_templates, yamlparser
+from .interpolate_templates import interpolate_templates, yamlparser, list_templates
 from .publish_encode import publish_encode
 from .write_templates import podman_scaffold
 
@@ -28,3 +28,4 @@ podman.add_command(podman_scaffold, "scaffold")
 podman.add_command(yamlparser)
 podman.add_command(publish_encode)
 podman.add_command(interpolate_templates)
+podman.add_command(list_templates)

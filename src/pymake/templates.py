@@ -619,7 +619,7 @@ TEMPLATES: list[TemplateType] = [
     },
     {
         "data": NGINX_TEMPLATE_CONFIG,
-        "templatefile": PATHS["templates"] / "nginx-template-config.conf",
+        "templatefile": PATHS["templates"] / "nginx-template.conf",
         "parsedfile": PATHS["nginx-out"] / "nginx.conf",
         "remove": False,
     },

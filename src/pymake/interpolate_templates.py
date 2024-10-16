@@ -1,5 +1,6 @@
 """A template parser."""
 
+import pprint
 import re
 from pathlib import Path
 from string import Template
@@ -18,7 +19,7 @@ import click
 
 SIMPLE_REGEX = re.compile(r"\${(.*?)\}")
 
-__all__ = ["yamlparser"]
+__all__ = ["yamlparser", "interpolate_templates", "list_templates"]
 
 
 def read_yaml(yaml_file: Path) -> dict[str, Any]:
@@ -40,7 +41,6 @@ def recurse(d: dict[str, Any]) -> dict[str, Any]:
                 if not SIMPLE_REGEX.findall(i):
                     d[key] = value.replace(f"${{{i}}}", d[i])
                     recurse(d)
-
     return d
 
 
@@ -77,7 +77,14 @@ def yamlparser(yaml_file: Path, inn_bound: Path, out_bound: Path) -> None:
     _yamlparser(yaml_file, inn_bound, out_bound)
 
 
-@click.command(help="Interpolate and write out production yaml files for all files defined in TEMPLATES.")
+@click.command(help="List all the defined templates.")
+def list_templates() -> None:
+    click.secho("Available templates:", fg="green")
+    for template in TEMPLATES:
+        click.secho(template["templatefile"], fg="blue")
+
+
+@click.command(help="Interpolate and write out production yaml files for all the defined templates.")
 def interpolate_templates() -> None:
     t = iter(TEMPLATES)
     config = next(t)
