@@ -644,13 +644,13 @@ TEMPLATES: list[TemplateType] = [
     {
         "data": DJANGO_SECRET,
         "templatefile": PATHS["secrets"] / "django-secrets-template.yaml",
-        "parsedfile": PATHS["secrets-out"] / "django-secrets.yaml",
+        "parsedfile": PATHS["secrets-out"] / "django-secrets-template.yaml",
         "remove": True,
     },
     {
         "data": POSTGRES_SECRET,
         "templatefile": PATHS["secrets"] / "postgres-secrets-template.yaml",
-        "parsedfile": PATHS["secrets-out"] / "postgres-secrets.yaml",
+        "parsedfile": PATHS["secrets-out"] / "postgres-secrets-template.yaml",
         "remove": True,
     },
 ]
