@@ -27,11 +27,15 @@ def read_yaml(yaml_file: Path) -> dict[str, Any]:
         return load(fp, Loader)
 
 
-def template_writer(template_innfile: Path, template_outfile: Path, data: dict[str, Any]) -> None:
+def template_writer(
+    template_innfile: Path, template_outfile: Path, data: dict[str, Any], remove: bool = False
+) -> None:
     with open(template_innfile, "r") as inn_fp:
         template = Template(inn_fp.read())
     with open(template_outfile, "w") as out_fp:
         out_fp.write(template.safe_substitute(data))
+        if remove:
+            (Path(template_outfile).parent / "remove").touch()
 
 
 def recurse(d: dict[str, Any]) -> dict[str, Any]:
@@ -44,11 +48,11 @@ def recurse(d: dict[str, Any]) -> dict[str, Any]:
     return d
 
 
-def _yamlparser(yaml_file: Path, inn_bound: Path, out_bound: Path) -> None:
+def _yamlparser(yaml_file: Path, inn_bound: Path, out_bound: Path, remove: bool = False) -> None:
     yaml_dict = read_yaml(yaml_file)
     substituted_dict = {key: value for section_dict in yaml_dict.values() for key, value in section_dict.items()}
     substituted_dict = recurse(substituted_dict)
-    template_writer(inn_bound, out_bound, substituted_dict)
+    template_writer(inn_bound, out_bound, substituted_dict, remove)
 
 
 @click.command("yamlparser", help="Interpolate the yaml configuration template files and write production files.")
@@ -90,5 +94,8 @@ def interpolate_templates() -> None:
     config = next(t)
     for template in t:
         _yamlparser(
-            yaml_file=config["templatefile"], inn_bound=template["templatefile"], out_bound=template["parsedfile"]
+            yaml_file=config["templatefile"],
+            inn_bound=template["templatefile"],
+            out_bound=template["parsedfile"],
+            remove=template["remove"],
         )
