@@ -187,7 +187,7 @@ spec:
       args:
         - gunicorn
         - -c
-        - config/gunicorn/conf.py
+        - config/gunicorn/gunicorn.conf
         - ${GUNICORN_RELOAD}
         - --chdir
         - ${APP_ROOT}
