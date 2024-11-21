@@ -47,6 +47,16 @@ MICROSOFT: # Single Sign on
   MICROSOFT_AUTH_CLIENT_SECRET: ""
   MICROSOFT_AUTH_TENANT_ID: "" 
   MICROSOFT_AUTH_EXTRA_SCOPES: "User.Read"
+GRAPHAPI:                                                                                                                                  
+  GRAPHAPI_TENANT_ID: ""
+  GRAPHAPI_CLIENT_ID: "" 
+  GRAPHAPI_CLIENT_SECRET: "" 
+PARTNERAPI:                                                                                                                                
+  PARTNER_PRICE_SHEET: "https://api.partner.microsoft.com/v1.0/sales/pricesheets(Market='NO',PricesheetView='licensebasedbeta')"           
+  PARTNER_CLIENT_ID: ${GRAPHAPI_CLIENT_ID}                                                                                                 
+  PARTNER_CLIENT_SECRET: ${GRAPHAPI_CLIENT_SECRET}                                                                                         
+  PARTNER_TENANT_ID: ${GRAPHAPI_TENANT_ID}                                                                                                 
+  PARTNER_REDIRECT_URI: "https://develop.msdirect.nrrd.code/billing/callback" 
 BUSINESS_CENTRAL:
   BCENTRAL_CLIENT_ID: ""
   BCENTRAL_CLIENT_SECRET: ""
@@ -575,6 +585,12 @@ data:
   BCENTRAL_PAYMENT_TERMS_API_URL: ${BCENTRAL_PAYMENT_TERMS_API_URL}
   BCENTRAL_TENANT_ID: ${BCENTRAL_TENANT_ID}
   BCENTRAL_CLIENT_ID: ${BCENTRAL_CLIENT_ID}
+  GRAPHAPI_TENANT_ID: ${GRAPHAPI_TENANT_ID}
+  GRAPHAPI_CLIENT_ID: ${GRAPHAPI_CLIENT_ID}
+  PARTNER_TENANT_ID: ${PARTNER_TENANT_ID}
+  PARTNER_CLIENT_ID: ${PARTNER_CLIENT_ID}
+  PARTNER_PRICE_SHEET: ${PARTNER_PRICE_SHEET}
+  PARTNER_REDIRECT_URI: ${PARTNER_REDIRECT_URI}
   MICROSOFT_AUTH_EXTRA_SCOPES: ${MICROSOFT_AUTH_EXTRA_SCOPES}
   MICROSOFT_AUTH_TENANT_ID: ${MICROSOFT_AUTH_TENANT_ID}
   MICROSOFT_AUTH_CLIENT_ID: ${MICROSOFT_AUTH_CLIENT_ID}
@@ -602,6 +618,8 @@ data:
   DJANGO_DB_PASSWORD: ${DJANGO_DB_PASSWORD}
   BCENTRAL_CLIENT_SECRET: ${BCENTRAL_CLIENT_SECRET}
   MICROSOFT_AUTH_CLIENT_SECRET: ${MICROSOFT_AUTH_CLIENT_SECRET}
+  GRAPHAPI_CLIENT_SECRET: ${GRAPHAPI_CLIENT_SECRET}
+  PARTNER_CLIENT_SECRET: ${PARTNER_CLIENT_SECRET}
 kind: Secret
 metadata:
   creationTimestamp: null
