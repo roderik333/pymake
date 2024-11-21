@@ -112,7 +112,7 @@ RUN mkdir /opt/services/${VOLUME_PREFIX}${VOLUME_NAME}/media
 VOLUME /opt/services/${VOLUME_PREFIX}${VOLUME_NAME}/media
 
 COPY pyproject.toml .
-COPY README.md
+COPY README.md .
 COPY ${APP_NAME}/__about__.py ./${APP_NAME}/__about__.py 
 
 RUN pip install --user --upgrade pip
