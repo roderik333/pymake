@@ -201,7 +201,7 @@ spec:
       args:
         - gunicorn
         - -c
-        - config/gunicorn/conf.py
+        - config/gunicorn/gunicorn.conf
         - --chdir
         - ${APP_ROOT}
         - --bind
