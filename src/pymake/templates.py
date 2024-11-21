@@ -161,7 +161,7 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: postgres-credentials2
+              name: postgres-credentials
               key: POSTGRES_PASSWORD
       image: ${POSTGRES_VERSION}
       ports:
@@ -240,7 +240,7 @@ spec:
         - name: DJANGO_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: django-credentials2
+              name: django-credentials
               key: DJANGO_DB_PASSWORD
         - name: DJANGO_DB_PORT
           valueFrom:
@@ -250,7 +250,7 @@ spec:
         - name: DJANGO_SECRET
           valueFrom:
             secretKeyRef:
-              name: django-credentials2
+              name: django-credentials
               key: DJANGO_SECRET
         - name: DJANGO_SETTINGS_MODULE
           valueFrom:
@@ -282,7 +282,7 @@ spec:
         - name: BCENTRAL_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
-              name: django-credentials2
+              name: django-credentials
               key: BCENTRAL_CLIENT_SECRET
         - name: BCENTRAL_API_URL
           valueFrom:
@@ -323,7 +323,7 @@ spec:
         - name: GRAPHAPI_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
-              name: django-credentials2
+              name: django-credentials
               key: GRAPHAPI_CLIENT_SECRET
         # PARTNER API
         - name: PARTNER_CLIENT_ID
@@ -334,7 +334,7 @@ spec:
         - name: PARTNER_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
-              name: django-credentials2
+              name: django-credentials
               key: PARTNER_CLIENT_SECRET
         - name: PARTNER_TENANT_ID
           valueFrom:
@@ -365,7 +365,7 @@ spec:
         - name: MICROSOFT_AUTH_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
-              name: django-credentials2
+              name: django-credentials
               key: MICROSOFT_AUTH_CLIENT_SECRET
         - name: MICROSOFT_AUTH_CLIENT_ID
           valueFrom:
