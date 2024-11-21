@@ -119,11 +119,25 @@ RUN pip install --user --upgrade pip
 RUN pip install --user --upgrade setuptools
 RUN pip install --user .
 """
+
 PLAY_KUBE_TEMPLATE = """
+# Warning:
+# All edits must happen in play-kube-template.yml
+# Any edit made in the resulting play-kube.yml will be lost
+#
+# Save the output of this file and use kubectl create -f to import
+# it into Kubernetes.
+#
+# Created with podman-4.4.2
+
+# NOTE: If you generated this yaml from an unprivileged and rootless podman container on an SELinux
+# enabled system, check the podman generate kube man page for steps to follow to ensure that your pod/container
+# has the right permissions to access the volumes added.
+---
 apiVersion: v1
 kind: Pod
 metadata:
-  creationTimestamp: "${TIMESTAMP}"
+  creationTimestamp: ${TIMESTAMP}
   labels:
     app: ${APP_NAME}-pod
   name: ${APP_NAME}-pod
@@ -147,7 +161,7 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: postgres-credentials
+              name: postgres-credentials2
               key: POSTGRES_PASSWORD
       image: ${POSTGRES_VERSION}
       ports:
@@ -166,7 +180,7 @@ spec:
         timeoutSeconds: 5
       volumeMounts:
         - mountPath: ${POSTGRES_MOUNT}
-          name: ${VOLUME_PREFIX}${DBSERVICE_NAME}_volume_pvc
+          name: ${DBSERVICE_NAME}-volume-pvc
       resources:
         limits:
           memory: 2000000Ki
@@ -187,16 +201,15 @@ spec:
       args:
         - gunicorn
         - -c
-        - config/gunicorn/gunicorn.conf
-        - ${GUNICORN_RELOAD}
+        - config/gunicorn/conf.py
         - --chdir
         - ${APP_ROOT}
         - --bind
         - :${APP_PORT}
         - ${APP_ROOT}.wsgi:application
-        - --reload
+        - ${GUNICORN_RELOAD}
       command:
-        - /bin/bash
+        - /bin/sh
         - /opt/services/${VOLUME_PREFIX}${VOLUME_NAME}/src/entrypoint.sh
       env:
         - name: DJANGO_ENV
@@ -227,23 +240,23 @@ spec:
         - name: DJANGO_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: django-credentials
+              name: django-credentials2
               key: DJANGO_DB_PASSWORD
         - name: DJANGO_DB_PORT
           valueFrom:
             configMapKeyRef:
               name: django-env
               key: DJANGO_DB_PORT
+        - name: DJANGO_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: django-credentials2
+              key: DJANGO_SECRET
         - name: DJANGO_SETTINGS_MODULE
           valueFrom:
             configMapKeyRef:
               name: django-env
               key: DJANGO_SETTINGS_MODULE
-        - name: DJANGO_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: django-credentials
-              key: DJANGO_SECRET
         # MEMCACHED
         - name: MEMCACHED_LOCATION
           valueFrom:
@@ -269,7 +282,7 @@ spec:
         - name: BCENTRAL_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
-              name: django-credentials
+              name: django-credentials2
               key: BCENTRAL_CLIENT_SECRET
         - name: BCENTRAL_API_URL
           valueFrom:
@@ -296,10 +309,52 @@ spec:
             configMapKeyRef:
               name: django-env
               key: BCENTRAL_CLIENT_ID
+        # GRAPHAPI
+        - name: GRAPHAPI_TENANT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: django-env
+              key: GRAPHAPI_TENANT_ID
+        - name: GRAPHAPI_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: django-env
+              key: GRAPHAPI_CLIENT_ID
+        - name: GRAPHAPI_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: django-credentials2
+              key: GRAPHAPI_CLIENT_SECRET
+        # PARTNER API
+        - name: PARTNER_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: django-env
+              key: PARTNER_CLIENT_ID
+        - name: PARTNER_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: django-credentials2
+              key: PARTNER_CLIENT_SECRET
+        - name: PARTNER_TENANT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: django-env
+              key: PARTNER_TENANT_ID
+        - name: PARTNER_PRICE_SHEET
+          valueFrom:
+            configMapKeyRef:
+              name: django-env
+              key: PARTNER_PRICE_SHEET
+        - name: PARTNER_REDIRECT_URI
+          valueFrom:
+            configMapKeyRef:
+              name: django-env
+              key: PARTNER_REDIRECT_URI
         # MICROSOFT
         - name: MICROSOFT_AUTH_EXTRA_SCOPES
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: django-env
               key: MICROSOFT_AUTH_EXTRA_SCOPES
         - name: MICROSOFT_AUTH_TENANT_ID
@@ -310,19 +365,18 @@ spec:
         - name: MICROSOFT_AUTH_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
-              name: django-credentials
+              name: django-credentials2
               key: MICROSOFT_AUTH_CLIENT_SECRET
         - name: MICROSOFT_AUTH_CLIENT_ID
           valueFrom:
             configMapKeyRef:
               name: django-env
               key: MICROSOFT_AUTH_CLIENT_ID
-      image: localhost/python:${APP_NAME}
+      image: localhost/${APPSERVICE_NAME}:latest
       ports:
-        - name: gunicorn
-          containerPort: ${APP_PORT}
+        - containerPort: ${APP_PORT}
           hostPort: 33433
-     readinessProbe:
+      readinessProbe:
         httpGet:
           path: "/"
           port: ${APP_PORT}
@@ -388,9 +442,9 @@ spec:
           name: ${VOLUME_NAME}-media-volume-pvc
   restartPolicy: Always
   volumes:
-    - name: ${VOLUME_PREFIX}${DBSERVICE_NAME}-volume-pvc
+    - name: ${DBSERVICE_NAME}-volume-pvc
       persistentVolumeClaim:
-        claimName: ${VOLUME_PREFIX}${DBSERVICE_NAME}-volume
+        claimName: ${DBSERVICE_NAME}-volume
     - hostPath:
         path: ${APP_SOURCE_ROOT}
         type: Directory
@@ -513,7 +567,7 @@ data:
   DJANGO_DB: ${DJANGO_DB}
   DJANGO_DB_HOST: ${DJANGO_DB_HOST}
   DJANGO_DB_PORT: ${DJANGO_DB_PORT}
-  DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE}.SETTINGS
+  DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE}
   BCENTRAL_TOKEN_URL: ${BCENTRAL_TOKEN_URL}
   BCENTRAL_RESOURCE: ${BCENTRAL_RESOURCE}
   BCENTRAL_API_URL: ${BCENTRAL_API_URL}
