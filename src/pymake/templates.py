@@ -30,7 +30,7 @@ DJANGO:
   DJANGO_DB_USER: ""
   DJANGO_DB_PASSWORD: ""
   DJANGO_DB_PORT: ""
-  DJANGO_SETTINGS_MODULE: "${APP_NAME}"
+  DJANGO_SETTINGS_MODULE: "${APP_NAME}.settings"
   DJANGO_DB_NAME: "${APP_NAME}"
   DJANGO_DB: "${APP_NAME}"
   DJANGO_DB_HOST: "${APP_NAME}"
@@ -71,7 +71,7 @@ NGINX:
   WORKER_PROCESSES: "5"
   WORKER_RLIMIT_NOFILE: "8192"
   WORKER_CONNECTIONS: "101024"
-  NGINX_IMAGE_VERSION: "latest"
+  NGINX_IMAGE_VERSION: "nginx:stable"
 GUNICORN:
   GUNICORN_LOG_LEVEL: "info"
   GUNICORN_WORKERS: "2"
@@ -80,7 +80,7 @@ GUNICORN:
 MEMCACHED:
   MEMCACHED_PORT: "11211"
   MEMCACHED_LOCATION: "${APP_NAME}-memcached:${MEMCACHED_PORT}"
-  MEMCACHED_IMAGE_VERSION: "latest"
+  MEMCACHED_IMAGE_VERSION: "memcached:latest"
 SERVICE_NAMES:
   APPSERVICE_NAME: "${APP_NAME}-app"
   PROXYSERVICE_NAME: "${APP_NAME}-nginx"
@@ -211,7 +211,7 @@ spec:
       args:
         - gunicorn
         - -c
-        - config/gunicorn/gunicorn.conf
+        - config/gunicorn/gunicorn.conf.py
         - --chdir
         - ${APP_ROOT}
         - --bind
@@ -685,8 +685,8 @@ TEMPLATES: list[TemplateType] = [
     },
     {
         "data": GUNICORN_TEMPLATE,
-        "templatefile": PATHS["templates"] / "gunicorn-template.conf",
-        "parsedfile": PATHS["gunicorn-out"] / "gunicorn.conf",
+        "templatefile": PATHS["templates"] / "gunicorn-template.conf.py",
+        "parsedfile": PATHS["gunicorn-out"] / "gunicorn.conf.py",
         "remove": False,
     },
     {
